@@ -38,6 +38,7 @@ class Todostate extends StatefulWidget {
 }
 
 class _TodoListScreenPage extends State<Todostate> {
+  //User Click Button in Task Page Change task to complete
   Widget _undochangetodone(BuildContext context, DocumentSnapshot document) {
     return (document['done'] == 0)
         ? ListTile(
@@ -62,6 +63,7 @@ class _TodoListScreenPage extends State<Todostate> {
         : Column();
   }
 
+  //showuncompletetask
   Widget _unCompleteItem(BuildContext context) {
     var list;
     list = Center(
@@ -73,8 +75,11 @@ class _TodoListScreenPage extends State<Todostate> {
     return StreamBuilder(
       stream: Firestore.instance.collection('todo').snapshots(),
       builder: (context, snapshot) {
+        //First Check HaveData?
+        if (!snapshot.hasData) return list;
         int check = 0;
         int lenghofvalue = snapshot.data.documents.length;
+        //If Have Then Loop Check Again
         for (var i = 0; i < lenghofvalue; i++) {
           if (snapshot.data.documents[i]['done'] == 0) {
             check += 1;
@@ -93,6 +98,7 @@ class _TodoListScreenPage extends State<Todostate> {
     );
   }
 
+  //User Click Button in Task Page Change complete to task
   Widget _donechangetoundo(BuildContext context, DocumentSnapshot document) {
     if (document['done'] == 1) {
       return ListTile(
@@ -115,6 +121,7 @@ class _TodoListScreenPage extends State<Todostate> {
     }
   }
 
+  //showcompletetask
   Widget _completeItem(BuildContext context) {
     var list;
     list = Center(
@@ -126,8 +133,11 @@ class _TodoListScreenPage extends State<Todostate> {
     return StreamBuilder(
       stream: Firestore.instance.collection('todo').snapshots(),
       builder: (context, snapshot) {
+        //First Check HaveData?
+        if (!snapshot.hasData) return list;
         int havedata = 0;
         int lenghofvalue = snapshot.data.documents.length;
+        //If Have Then Loop Check Again
         for (var i = 0; i < lenghofvalue; i++) {
           if (snapshot.data.documents[i]['done'] == 1) {
             havedata += 1;
@@ -147,15 +157,55 @@ class _TodoListScreenPage extends State<Todostate> {
   }
 
   void _addItem() async {
+    //Add Task
+    // unCompleteItems = List();
+    // havecount = false;
+    // _completeItems = List();
+    // count = 0;
+    // await Navigator.pushNamed(context, "/add");
+    // _datamanage.getTodo().then((r) {
+
+    //   //check it have space to add
+    //   //***Not use Now***/
+    //   for(var j = 0; j < counttodo; j++) {
+    //     count += 1;
+    //   }
+    //   if(count > 0) {
+    //     havecount = true;
+    //   }
+
+    //   //add list
+    //   //Use//
+    //   for (var i = 0; i < r.length; i++) {
+    //     (r[i].done == false)?setState(() { _unCompleteItems.add(r[i]);}):setState(() { _completeItems.add(r[i]);});
+    //   }
+    // });
     await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddItempage()));
   }
 
   Future _delete() async {
+    var length;
+    // count = 0;
+    // havedelete = false;
+    // for(var j = 0; j < countcomplete; j++) {
+    //     count += 1;
+    //   }
+    //   if(count > 0) {
+    //     havedelete = true;
+    //   }
+
+    //   //delete item
+    //   //Use//
+    // _datamanage.deleteTodo();
+    //       setState(() {
+    //         _completeItems =List();
+    //       });
     final QuerySnapshot result =
         await Firestore.instance.collection('todo').getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
-    for (var i = 0; i < documents.length; i++) {
+    length = documents.length;
+    for (var i = 0; i < length; i++) {
       if (documents[i]['done'] == 1) {
         Firestore.instance
             .collection('todo')
